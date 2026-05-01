@@ -2,17 +2,74 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/kabok"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/kabok"
         android:supportsRtl="true"
         android:theme="@style/Theme.BookaBook">
         <activity
+            android:name=".ui.StoreMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.CreateStoreActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.PendingApprovalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.UserMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.AddInventoryItemActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.StoreHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.UserHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.StoreRegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.StoreLoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.UserRegisterActivity"
+            android:exported="false" />
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".BroadcastReceiver_test"
+            android:exported="false" />
+        <activity
+            android:name=".DevRoom"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +77,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.bookabook.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

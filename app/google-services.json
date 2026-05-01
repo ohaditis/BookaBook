@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "628582770586",
+    "firebase_url": "https://bookabook-dd99c-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "bookabook-dd99c",
+    "storage_bucket": "bookabook-dd99c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628582770586:android:a65d7b9fd8c9da8c4a3c23",
+        "android_client_info": {
+          "package_name": "com.example.bookabook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSh7-IboPDhGFqlOsKl59mYeVhwIPNyvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
