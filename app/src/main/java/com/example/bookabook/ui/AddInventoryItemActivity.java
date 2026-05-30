@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,23 +56,33 @@ public class AddInventoryItemActivity extends AppCompatActivity {
     private String lastCheckedIsbn = "";
     private Uri imageUri = null;
 
-    // Handles both gallery picks AND camera captures
-    private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
+    // Handles camera captures
+    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    Uri resultUri = (result.getData() != null && result.getData().getData() != null)
-                            ? result.getData().getData()
-                            : imageUri;
-
-                    if (resultUri != null) {
-                        imageUri = resultUri;
+                    if (imageUri != null) {
                         Glide.with(this)
                                 .load(imageUri)
                                 .placeholder(R.drawable.ic_launcher_background)
                                 .error(R.drawable.ic_launcher_background)
                                 .into(ivCoverPreview);
                     }
+                }
+            }
+    );
+
+    // Handles gallery picks using the modern Photo Picker
+    private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.PickVisualMedia(),
+            uri -> {
+                if (uri != null) {
+                    imageUri = uri;
+                    Glide.with(this)
+                            .load(imageUri)
+                            .placeholder(R.drawable.ic_launcher_background)
+                            .error(R.drawable.ic_launcher_background)
+                            .into(ivCoverPreview);
                 }
             }
     );
@@ -329,9 +340,9 @@ public class AddInventoryItemActivity extends AppCompatActivity {
                 .show();
     }
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        imagePickerLauncher.launch(intent);
+        galleryLauncher.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
     }
 
     private void openCamera() {
@@ -350,7 +361,7 @@ public class AddInventoryItemActivity extends AppCompatActivity {
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         // Explicit URI grants fix the Android 18 warning and the silent failure
         cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        imagePickerLauncher.launch(cameraIntent);
+        cameraLauncher.launch(cameraIntent);
     }
 
     private Uri createImageUri() {

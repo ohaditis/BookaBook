@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,23 +43,33 @@ public class CreateStoreActivity extends AppCompatActivity {
 
     private Uri imageUri = null;
 
-    // Handles both gallery picks AND camera captures
-    private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
+    // Handles camera captures
+    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    Uri resultUri = (result.getData() != null && result.getData().getData() != null)
-                            ? result.getData().getData()
-                            : imageUri;
-
-                    if (resultUri != null) {
-                        imageUri = resultUri;
+                    if (imageUri != null) {
                         Glide.with(this)
                                 .load(imageUri)
                                 .placeholder(R.drawable.ic_launcher_background)
                                 .error(R.drawable.ic_launcher_background)
                                 .into(ivStoreImagePreview);
                     }
+                }
+            }
+    );
+
+    // Handles gallery picks using the modern Photo Picker
+    private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.PickVisualMedia(),
+            uri -> {
+                if (uri != null) {
+                    imageUri = uri;
+                    Glide.with(this)
+                            .load(imageUri)
+                            .placeholder(R.drawable.ic_launcher_background)
+                            .error(R.drawable.ic_launcher_background)
+                            .into(ivStoreImagePreview);
                 }
             }
     );
@@ -113,9 +124,9 @@ public class CreateStoreActivity extends AppCompatActivity {
     }
 
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        imagePickerLauncher.launch(intent);
+        galleryLauncher.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
     }
 
     private void openCamera() {
@@ -132,7 +143,7 @@ public class CreateStoreActivity extends AppCompatActivity {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        imagePickerLauncher.launch(cameraIntent);
+        cameraLauncher.launch(cameraIntent);
     }
 
     private Uri createImageUri() {
@@ -173,7 +184,6 @@ public class CreateStoreActivity extends AppCompatActivity {
         if (imageUri != null) {
             uploadImageAndSaveStore(storeId, name, address, city, phone, description, uid);
         } else {
-            // No image selected, use null (app will use default bg when displaying)
             saveStoreToDatabase(storeId, name, address, city, phone, description, uid, null);
         }
     }
@@ -184,7 +194,6 @@ public class CreateStoreActivity extends AppCompatActivity {
             saveStoreToDatabase(storeId, name, address, city, phone, description, uid, uri.toString());
         })).addOnFailureListener(e -> {
             Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            // Optionally save without image if upload fails
             saveStoreToDatabase(storeId, name, address, city, phone, description, uid, null);
         });
     }
