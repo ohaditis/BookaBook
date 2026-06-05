@@ -17,9 +17,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/kabok"
+        android:icon="@drawable/bookabook_logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/kabok"
+        android:roundIcon="@drawable/bookabook_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.BookaBook">
         <activity
@@ -38,12 +38,6 @@
             android:name=".ui.AddInventoryItemActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ui.StoreHomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.UserHomeActivity"
-            android:exported="false" />
         <activity
             android:name=".ui.StoreRegisterActivity"
             android:exported="false" />

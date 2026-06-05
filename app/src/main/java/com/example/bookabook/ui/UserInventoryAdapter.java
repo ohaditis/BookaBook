@@ -1,5 +1,6 @@
 package com.example.bookabook.ui;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.bookabook.R;
+import com.example.bookabook.WishlistManager;
 import com.example.bookabook.models.Book;
 import com.example.bookabook.models.InventoryItem;
 import com.example.bookabook.models.Store;
@@ -23,13 +25,26 @@ import java.util.Map;
 public class UserInventoryAdapter extends RecyclerView.Adapter<UserInventoryAdapter.ViewHolder> {
 
     private List<InventoryItem> items = new ArrayList<>();
+    private WishlistManager wishlistManager;
     private Map<String, Book> booksMap;
     private Map<String, Store> storesMap;
+    private OnWishlistClickListener wishlistClickListener;
 
-    public void setData(List<InventoryItem> items, Map<String, Book> booksMap, Map<String, Store> storesMap) {
+    public interface OnWishlistClickListener {
+        void onWishlistClick(InventoryItem item, int position);
+    }
+
+    public void setOnWishlistClickListener(OnWishlistClickListener listener) {
+        this.wishlistClickListener = listener;
+    }
+
+    public void setData(List<InventoryItem> items, Map<String, Book> booksMap, Map<String, Store> storesMap, Context context) {
         this.items = items;
         this.booksMap = booksMap;
         this.storesMap = storesMap;
+        if (this.wishlistManager == null) {
+            this.wishlistManager = new WishlistManager(context);
+        }
         notifyDataSetChanged();
     }
 
@@ -70,6 +85,22 @@ public class UserInventoryAdapter extends RecyclerView.Adapter<UserInventoryAdap
                 inStock ? android.R.color.holo_green_dark : android.R.color.holo_red_dark));
         
         holder.tvStockCount.setText("Units available: " + (item.getStockCount() != null ? item.getStockCount() : 0));
+
+        // Wishlist logic
+        if (wishlistManager != null) {
+            boolean isItemWishlisted = wishlistManager.isWishlisted(item.getStoreId(), item.getIsbn());
+            if (isItemWishlisted) {
+                holder.ivWishlist.setImageResource(android.R.drawable.btn_star_big_on);
+            } else {
+                holder.ivWishlist.setImageResource(android.R.drawable.btn_star_big_off);
+            }
+        }
+
+        holder.ivWishlist.setOnClickListener(v -> {
+            if (wishlistClickListener != null) {
+                wishlistClickListener.onWishlistClick(item, holder.getAdapterPosition());
+            }
+        });
     }
 
     @Override
@@ -79,8 +110,7 @@ public class UserInventoryAdapter extends RecyclerView.Adapter<UserInventoryAdap
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvBookTitle, tvStoreName, tvPrice, tvStatus, tvStockCount;
-        ImageView ivBookCover;
-
+        ImageView ivBookCover, ivWishlist;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -90,6 +120,7 @@ public class UserInventoryAdapter extends RecyclerView.Adapter<UserInventoryAdap
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvStockCount = itemView.findViewById(R.id.tvStockCount);
             ivBookCover = itemView.findViewById(R.id.ivBookCover);
+            ivWishlist = itemView.findViewById(R.id.ivWishlist);
         }
     }
 }

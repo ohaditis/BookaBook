@@ -12,4 +12,10 @@
     <string name="title_activity_login_test">LoginTest</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="wishlist_filter">Wishlist</string>
+    <string name="wishlist_show_all">Show All</string>
+    <string name="wishlist_button_desc">Wishlist button</string>
+    <string name="price_format">Price: %s₪</string>
+    <string name="stock_count_format">Units available: %d</string>
 </resources>
