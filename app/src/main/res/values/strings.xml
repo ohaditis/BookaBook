@@ -18,4 +18,24 @@
     <string name="wishlist_button_desc">Wishlist button</string>
     <string name="price_format">Price: %s₪</string>
     <string name="stock_count_format">Units available: %d</string>
+
+    <string name="hint_confirm_email">Confirm Email</string>
+    <string name="hint_confirm_phone">Confirm 5XXXXXXXX</string>
+    <string name="error_emails_dont_match">Emails do not match</string>
+    <string name="error_phones_dont_match">Phone numbers do not match</string>
+    <string name="create_user_account">Create User Account</string>
+
+    <string name="action_refresh">Refresh</string>
+    <string name="action_update">Update Profile</string>
+    <string name="action_logout">Logout</string>
+
+    <string name="btn_setup_map">Set up Google Map</string>
+    <string name="btn_change_map">Change Google map location</string>
+    <string name="msg_location_not_set">Store location not set yet</string>
+    <string name="label_pick_location">Pick Store Location</string>
+    <string name="label_view_location">Store Location</string>
+    <string name="btn_confirm_location">Confirm Location</string>
+    <string name="hint_tap_map">Tap on the map to select store location</string>
+    <string name="msg_location_updated">Location updated!</string>
+    <string name="msg_location_update_failed">Failed to update location</string>
 </resources>

@@ -88,6 +88,15 @@
                     android:textColor="?attr/colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <Button
+                android:id="@+id/btnSetLocation"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Set up Google Map"
+                app:icon="@android:drawable/ic_dialog_map" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -118,7 +127,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="32dp" />
 
         </LinearLayout>
     </ScrollView>

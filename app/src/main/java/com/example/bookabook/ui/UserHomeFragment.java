@@ -35,13 +35,11 @@ public class UserHomeFragment extends Fragment {
     private UserInventoryAdapter adapter;
     private FirebaseDatabase database;
     private WishlistManager wishlistManager;
-    private MaterialButton btnWishlist;
+    private MaterialButton btnRefresh;
 
     private final List<InventoryItem> allInventoryItems = new ArrayList<>();
     private final Map<String, Book> booksMap = new HashMap<>();
     private final Map<String, Store> storesMap = new HashMap<>();
-
-    private boolean showWishlistOnly = false;
 
     public UserHomeFragment() {
     }
@@ -60,7 +58,7 @@ public class UserHomeFragment extends Fragment {
         rvUserInventory = view.findViewById(R.id.rvUserInventory);
         rvUserInventory.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        btnWishlist = view.findViewById(R.id.btnWishlist);
+        btnRefresh = view.findViewById(R.id.btnRefresh);
 
         adapter = new UserInventoryAdapter();
         rvUserInventory.setAdapter(adapter);
@@ -70,23 +68,12 @@ public class UserHomeFragment extends Fragment {
             sortAndRefreshList();
         });
 
-        btnWishlist.setOnClickListener(v -> {
-            showWishlistOnly = !showWishlistOnly;
-            updateWishlistButtonUI();
-            sortAndRefreshList();
+        btnRefresh.setOnClickListener(v -> {
+            Toast.makeText(requireContext(), "Refreshing data...", Toast.LENGTH_SHORT).show();
+            loadData();
         });
 
         return view;
-    }
-
-    private void updateWishlistButtonUI() {
-        if (showWishlistOnly) {
-            btnWishlist.setText(R.string.wishlist_show_all);
-            btnWishlist.setIconResource(android.R.drawable.ic_menu_agenda);
-        } else {
-            btnWishlist.setText(R.string.wishlist_filter);
-            btnWishlist.setIconResource(android.R.drawable.btn_star_big_on);
-        }
     }
 
     @Override
@@ -136,7 +123,7 @@ public class UserHomeFragment extends Fragment {
     }
 
     private void loadInventory() {
-        database.getReference("inventory").addValueEventListener(new ValueEventListener() {
+        database.getReference("inventory").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 allInventoryItems.clear();
@@ -162,16 +149,7 @@ public class UserHomeFragment extends Fragment {
     }
 
     private void sortAndRefreshList() {
-        List<InventoryItem> displayList = new ArrayList<>();
-        
-        for (InventoryItem item : allInventoryItems) {
-            boolean isWishlisted = wishlistManager.isWishlisted(item.getStoreId(), item.getIsbn());
-            if (!showWishlistOnly || isWishlisted) {
-                displayList.add(item);
-            }
-        }
-
-        Collections.sort(displayList, (o1, o2) -> {
+        Collections.sort(allInventoryItems, (o1, o2) -> {
             boolean isO1Wishlisted = wishlistManager.isWishlisted(o1.getStoreId(), o1.getIsbn());
             boolean isO2Wishlisted = wishlistManager.isWishlisted(o2.getStoreId(), o2.getIsbn());
 
@@ -187,9 +165,9 @@ public class UserHomeFragment extends Fragment {
             return name1.compareToIgnoreCase(name2);
         });
 
-        adapter.setData(displayList, booksMap, storesMap, requireContext());
+        adapter.setData(allInventoryItems, booksMap, storesMap, requireContext());
 
-        if (!displayList.isEmpty()) {
+        if (!allInventoryItems.isEmpty()) {
             rvUserInventory.scrollToPosition(0);
         }
     }

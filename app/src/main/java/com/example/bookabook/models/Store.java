@@ -10,6 +10,8 @@ public class Store {
     private String ownerUid;
     private String storeImageUrl;
     private long createdAt;
+    private Double latitude;
+    private Double longitude;
 
     public Store() {}
 
@@ -96,5 +98,21 @@ public class Store {
 
     public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

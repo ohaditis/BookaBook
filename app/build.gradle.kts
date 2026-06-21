@@ -28,8 +28,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val geminiApiKey = localProperties.getProperty("Gemini_API_key") ?: ""
+        val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
         buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
+        resValue("string", "google_maps_key", mapsApiKey)
     }
 
     buildTypes {
@@ -73,6 +75,10 @@ dependencies {
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
     
     implementation("com.googlecode.libphonenumber:libphonenumber:9.0.27")
+
+    // Google Maps & Location
+    implementation("com.google.android.gms:play-services-maps:20.0.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

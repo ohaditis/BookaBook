@@ -104,6 +104,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:hint="Confirm 5XXXXXXXX">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPhoneLocalConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/colorOnSurface"
+                    android:inputType="phone" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:hint="Password"
                 app:passwordToggleEnabled="true">
 

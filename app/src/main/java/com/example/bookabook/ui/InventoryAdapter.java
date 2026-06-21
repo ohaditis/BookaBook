@@ -99,6 +99,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             item.setStockCount(newStock);
             item.setStorePrice(newPrice);
             item.setStatus(newStatus);
+            item.setLastUpdated(System.currentTimeMillis());
 
             // Update Firebase
             FirebaseDatabase.getInstance().getReference("inventory")

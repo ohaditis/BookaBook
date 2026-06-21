@@ -18,13 +18,15 @@ public class WishlistManager {
         return storeId + "_" + isbn;
     }
 
-    // בדיקה האם פריט נמצא ב-Wishlist
     public boolean isWishlisted(String storeId, String isbn) {
         Set<String> wishlist = prefs.getStringSet(KEY_WISHLIST, new HashSet<>());
         return wishlist.contains(generateKey(storeId, isbn));
     }
 
-    // הוספה או הסרה מה-Wishlist
+    public Set<String> getWishlistKeys() {
+        return prefs.getStringSet(KEY_WISHLIST, new HashSet<>());
+    }
+
     public void toggleWishlist(String storeId, String isbn) {
         Set<String> wishlist = new HashSet<>(prefs.getStringSet(KEY_WISHLIST, new HashSet<>()));
         String itemKey = generateKey(storeId, isbn);

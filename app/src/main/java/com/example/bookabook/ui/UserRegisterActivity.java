@@ -21,6 +21,7 @@ public class UserRegisterActivity extends AppCompatActivity {
 
     private TextInputEditText etDisplayName;
     private TextInputEditText etEmail;
+    private TextInputEditText etEmailConfirm;
     private TextInputEditText etPassword;
     private Button btnRegister;
 
@@ -41,6 +42,7 @@ public class UserRegisterActivity extends AppCompatActivity {
 
         etDisplayName = findViewById(R.id.etDisplayName);
         etEmail = findViewById(R.id.etEmail);
+        etEmailConfirm = findViewById(R.id.etEmailConfirm);
         etPassword = findViewById(R.id.etPassword);
         btnRegister = findViewById(R.id.btnRegister);
 
@@ -50,6 +52,7 @@ public class UserRegisterActivity extends AppCompatActivity {
     private void registerUser() {
         String displayName = etDisplayName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
+        String emailConfirm = etEmailConfirm.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(displayName)) {
@@ -59,6 +62,11 @@ public class UserRegisterActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Email is required");
+            return;
+        }
+
+        if (!email.equalsIgnoreCase(emailConfirm)) {
+            etEmailConfirm.setError(getString(R.string.error_emails_dont_match));
             return;
         }
 

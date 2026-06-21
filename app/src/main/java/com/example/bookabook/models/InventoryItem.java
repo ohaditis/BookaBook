@@ -3,67 +3,27 @@ package com.example.bookabook.models;
 import com.example.bookabook.models.enums.InventoryStatus;
 
 public class InventoryItem {
-
-    protected void  howInventoryItemShouldBeStoredInRTDB() {
-                    /*
-           "inventory": {
-                "storeA": {
-                  "978123": {
-                    "isbn": "978123",
-                    "storeId": "storeA",
-                    "storePrice": 50,
-                    "status": "IN_STOCK",
-                    "stockCount": 3
-                  },
-
-                  "978456": {
-                    "isbn": "978456",
-                    "storeId": "storeA",
-                    "storePrice": 70,
-                    "status": "OUT_OF_STOCK",
-                    "stockCount": 0
-                  }
-                },
-
-
-                "storeB": {
-                  "978123": {
-                    "isbn": "978123",
-                    "storeId": "storeB",
-                    "storePrice": 55,
-                    "status": "IN_STOCK",
-                    "stockCount": 8
-                  }
-
-                }
-
-
-              }
-                     */
-
-
-    }
-
-
     private String isbn;
     private String storeId;
     private Double storePrice;
     private InventoryStatus status;
     private Integer stockCount;
     private String lastUpdatedByStoreUserId;
+    private long lastUpdated;
 
     public InventoryItem() {
     }
 
     public InventoryItem(String isbn, String storeId, Double storePrice,
                          InventoryStatus status, Integer stockCount,
-                         String lastUpdatedByStoreUserId) {
+                         String lastUpdatedByStoreUserId, long lastUpdated) {
         this.isbn = isbn;
         this.storeId = storeId;
         this.storePrice = storePrice;
         this.status = status;
         this.stockCount = stockCount;
         this.lastUpdatedByStoreUserId = lastUpdatedByStoreUserId;
+        this.lastUpdated = lastUpdated;
     }
 
     public String getIsbn() {
@@ -114,6 +74,11 @@ public class InventoryItem {
         this.lastUpdatedByStoreUserId = lastUpdatedByStoreUserId;
     }
 
+    public long getLastUpdated() {
+        return lastUpdated;
+    }
 
-
+    public void setLastUpdated(long lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 }

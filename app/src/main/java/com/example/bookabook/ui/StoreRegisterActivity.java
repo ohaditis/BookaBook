@@ -24,7 +24,7 @@ import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 public class StoreRegisterActivity extends AppCompatActivity {
 
-    private TextInputEditText etPhoneLocal, etPassword;
+    private TextInputEditText etPhoneLocal, etPhoneLocalConfirm, etPassword;
     private Button btnRegisterStoreUser, btnCancel;
 
     private FirebaseAuth auth;
@@ -43,6 +43,7 @@ public class StoreRegisterActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
 
         etPhoneLocal = findViewById(R.id.etPhoneLocal);
+        etPhoneLocalConfirm = findViewById(R.id.etPhoneLocalConfirm);
         etPassword = findViewById(R.id.etPassword);
         btnRegisterStoreUser = findViewById(R.id.btnRegisterStoreUser);
         btnCancel = findViewById(R.id.btnCancel);
@@ -53,10 +54,16 @@ public class StoreRegisterActivity extends AppCompatActivity {
 
     private void registerStoreUser() {
         String phoneInput = etPhoneLocal.getText().toString().trim();
+        String phoneConfirm = etPhoneLocalConfirm.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(phoneInput)) {
             etPhoneLocal.setError("Phone number is required");
+            return;
+        }
+
+        if (!phoneInput.equals(phoneConfirm)) {
+            etPhoneLocalConfirm.setError(getString(R.string.error_phones_dont_match));
             return;
         }
 

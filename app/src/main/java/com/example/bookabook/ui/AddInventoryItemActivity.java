@@ -282,7 +282,7 @@ public class AddInventoryItemActivity extends AppCompatActivity {
     }
 
     private void saveInventory(String storeId, String isbn, double price, String uid) {
-        InventoryItem item = new InventoryItem(isbn, storeId, price, InventoryStatus.OUT_OF_STOCK, 0, uid);
+        InventoryItem item = new InventoryItem(isbn, storeId, price, InventoryStatus.OUT_OF_STOCK, 0, uid, System.currentTimeMillis());
         database.getReference("inventory").child(storeId).child(isbn).setValue(item)
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(this, "Item saved successfully", Toast.LENGTH_SHORT).show();

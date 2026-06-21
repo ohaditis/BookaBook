@@ -1,5 +1,7 @@
 package com.example.bookabook.ui;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -23,15 +27,30 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StoreProfileFragment extends Fragment {
 
     private TextInputEditText etStoreName, etStoreAddress, etStoreCity, etStoreDescription, etStoreUserPhone;
-    private Button btnUpdateStoreProfile, btnLogoutStore;
+    private Button btnUpdateStoreProfile, btnLogoutStore, btnSetLocation;
 
     private FirebaseAuth auth;
     private FirebaseDatabase database;
     private String uid;
     private String currentStoreId;
+    private Store currentStore;
+
+    private final ActivityResultLauncher<Intent> pickLocationLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    double lat = result.getData().getDoubleExtra("lat", 0);
+                    double lng = result.getData().getDoubleExtra("lng", 0);
+                    saveStoreLocation(lat, lng);
+                }
+            }
+    );
 
     public StoreProfileFragment() {
     }
@@ -52,11 +71,16 @@ public class StoreProfileFragment extends Fragment {
         etStoreUserPhone = view.findViewById(R.id.etStoreUserPhone);
         btnUpdateStoreProfile = view.findViewById(R.id.btnUpdateStoreProfile);
         btnLogoutStore = view.findViewById(R.id.btnLogoutStore);
+        btnSetLocation = view.findViewById(R.id.btnSetLocation);
 
         loadStoreUserData();
 
         btnUpdateStoreProfile.setOnClickListener(v -> updateStoreProfile());
         btnLogoutStore.setOnClickListener(v -> logout());
+        btnSetLocation.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), PickLocationActivity.class);
+            pickLocationLauncher.launch(intent);
+        });
 
         return view;
     }
@@ -86,16 +110,18 @@ public class StoreProfileFragment extends Fragment {
     }
 
     private void loadStoreData(String storeId) {
-        database.getReference("stores").child(storeId).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getReference("stores").child(storeId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (isAdded()) {
-                    Store store = snapshot.getValue(Store.class);
-                    if (store != null) {
-                        etStoreName.setText(store.getStoreName());
-                        etStoreAddress.setText(store.getAddress());
-                        etStoreCity.setText(store.getCity());
-                        etStoreDescription.setText(store.getDescription());
+                    currentStore = snapshot.getValue(Store.class);
+                    if (currentStore != null) {
+                        etStoreName.setText(currentStore.getStoreName());
+                        etStoreAddress.setText(currentStore.getAddress());
+                        etStoreCity.setText(currentStore.getCity());
+                        etStoreDescription.setText(currentStore.getDescription());
+
+                        updateLocationButton();
                     }
                 }
             }
@@ -104,6 +130,26 @@ public class StoreProfileFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    private void updateLocationButton() {
+        if (currentStore != null && currentStore.getLatitude() != null && currentStore.getLongitude() != null) {
+            btnSetLocation.setText(R.string.btn_change_map);
+        } else {
+            btnSetLocation.setText(R.string.btn_setup_map);
+        }
+    }
+
+    private void saveStoreLocation(double lat, double lng) {
+        if (currentStoreId == null) return;
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("latitude", lat);
+        updates.put("longitude", lng);
+
+        database.getReference("stores").child(currentStoreId).updateChildren(updates)
+                .addOnSuccessListener(unused -> Toast.makeText(requireContext(), R.string.msg_location_updated, Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireContext(), R.string.msg_location_update_failed, Toast.LENGTH_SHORT).show());
     }
 
     private void updateStoreProfile() {
@@ -119,10 +165,13 @@ public class StoreProfileFragment extends Fragment {
 
         if (currentStoreId == null) return;
 
-        database.getReference("stores").child(currentStoreId).child("storeName").setValue(name);
-        database.getReference("stores").child(currentStoreId).child("address").setValue(address);
-        database.getReference("stores").child(currentStoreId).child("city").setValue(city);
-        database.getReference("stores").child(currentStoreId).child("description").setValue(description)
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("storeName", name);
+        updates.put("address", address);
+        updates.put("city", city);
+        updates.put("description", description);
+
+        database.getReference("stores").child(currentStoreId).updateChildren(updates)
                 .addOnSuccessListener(unused -> Toast.makeText(requireContext(), "Store profile updated!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(requireContext(), "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }

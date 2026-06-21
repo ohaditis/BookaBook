@@ -3,18 +3,22 @@ package com.example.bookabook.ui;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.bookabook.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class StoreMainActivity extends AppCompatActivity {
+
+    private ViewPager2 viewPager;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,30 +32,55 @@ public class StoreMainActivity extends AppCompatActivity {
             return insets;
         });
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        viewPager = findViewById(R.id.storeViewPager);
+        bottomNavigationView = findViewById(R.id.bottomNavigation);
 
-        // Set default fragment
-        if (savedInstanceState == null) {
-            replaceFragment(new StoreHomeFragment());
-        }
+        setupViewPager();
+        setupBottomNavigation();
+    }
 
+    private void setupViewPager() {
+        viewPager.setAdapter(new FragmentStateAdapter(this) {
+            @NonNull
+            @Override
+            public Fragment createFragment(int position) {
+                if (position == 0) {
+                    return new StoreHomeFragment();
+                } else {
+                    return new StoreProfileFragment();
+                }
+            }
+
+            @Override
+            public int getItemCount() {
+                return 2;
+            }
+        });
+
+        // Sync ViewPager with BottomNavigation
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_store_home);
+                } else if (position == 1) {
+                    bottomNavigationView.setSelectedItemId(R.id.navigation_store_profile);
+                }
+            }
+        });
+    }
+
+    private void setupBottomNavigation() {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_store_home) {
-                replaceFragment(new StoreHomeFragment());
+                viewPager.setCurrentItem(0, true);
                 return true;
             } else if (itemId == R.id.navigation_store_profile) {
-                replaceFragment(new StoreProfileFragment());
+                viewPager.setCurrentItem(1, true);
                 return true;
             }
             return false;
         });
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, fragment);
-        fragmentTransaction.commit();
     }
 }

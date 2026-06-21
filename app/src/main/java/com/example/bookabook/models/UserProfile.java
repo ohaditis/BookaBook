@@ -5,15 +5,16 @@ public class UserProfile {
     private String email;
     private String displayName;
     private boolean active;
+    private String notificationTime; // "None", "08:00", "20:00"
 
     public UserProfile() {
     }
 
     public UserProfile(String email) {
-        this.uid = uid;
         this.email = email;
         this.displayName = email;
         this.active = true;
+        this.notificationTime = "None";
     }
 
     public UserProfile(String uid, String email, String displayName, boolean active) {
@@ -21,6 +22,15 @@ public class UserProfile {
         this.email = email;
         this.displayName = displayName;
         this.active = active;
+        this.notificationTime = "None";
+    }
+
+    public UserProfile(String uid, String email, String displayName, boolean active, String notificationTime) {
+        this.uid = uid;
+        this.email = email;
+        this.displayName = displayName;
+        this.active = active;
+        this.notificationTime = notificationTime;
     }
 
     public String getUid() {
@@ -53,5 +63,13 @@ public class UserProfile {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getNotificationTime() {
+        return notificationTime;
+    }
+
+    public void setNotificationTime(String notificationTime) {
+        this.notificationTime = notificationTime;
     }
 }

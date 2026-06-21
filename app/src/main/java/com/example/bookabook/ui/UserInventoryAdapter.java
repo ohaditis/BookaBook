@@ -1,11 +1,13 @@
 package com.example.bookabook.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,6 +77,19 @@ public class UserInventoryAdapter extends RecyclerView.Adapter<UserInventoryAdap
         } else {
             holder.ivBookCover.setImageResource(R.drawable.ic_launcher_background);
         }
+
+        holder.ivBookCover.setOnClickListener(v -> {
+            if (store != null && store.getLatitude() != null && store.getLongitude() != null) {
+                Intent intent = new Intent(holder.itemView.getContext(), ViewStoreLocationActivity.class);
+                intent.putExtra("lat", store.getLatitude());
+                intent.putExtra("lng", store.getLongitude());
+                intent.putExtra("storeName", store.getStoreName());
+                holder.itemView.getContext().startActivity(intent);
+            } else {
+                Toast.makeText(holder.itemView.getContext(), "Store location not set yet", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         holder.tvBookTitle.setText(book != null ? book.getTitle() : "Unknown Book");
         holder.tvStoreName.setText(store != null ? store.getStoreName() : "Unknown Store");
         holder.tvPrice.setText("Price: " + (item.getStorePrice() != null ? item.getStorePrice() : 0.0) + "₪");

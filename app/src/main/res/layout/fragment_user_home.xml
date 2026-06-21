@@ -26,12 +26,12 @@
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnWishlist"
+            android:id="@+id/btnRefresh"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wishlist"
-            app:icon="@android:drawable/btn_star_big_on" />
+            android:text="Refresh"
+            app:icon="@drawable/ic_refresh" />
 
     </LinearLayout>
 

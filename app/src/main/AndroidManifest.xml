@@ -12,6 +12,10 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -22,6 +26,11 @@
         android:roundIcon="@drawable/bookabook_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.BookaBook">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity
             android:name=".ui.StoreMainActivity"
             android:exported="false" />
@@ -47,21 +56,32 @@
         <activity
             android:name=".ui.UserRegisterActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.PickLocationActivity"
+            android:exported="false"
+            android:label="Pick Store Location" />
+        <activity
+            android:name=".ui.ViewStoreLocationActivity"
+            android:exported="false"
+            android:label="Store Location" />
 
         <receiver
             android:name=".AlarmReceiver"
             android:enabled="true"
             android:exported="false" />
 
-        <activity
-            android:name=".BroadcastReceiver_test"
-            android:exported="false" />
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".DevRoom"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true" />
         <activity
             android:name=".ui.LoginActivity"
             android:exported="true">

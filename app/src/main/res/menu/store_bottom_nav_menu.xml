@@ -2,8 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_store_home"
+        android:icon="@drawable/ic_store"
         android:title="My Store" />
     <item
         android:id="@+id/navigation_store_profile"
+        android:icon="@drawable/ic_person"
         android:title="Profile" />
 </menu>
